@@ -60,6 +60,7 @@ export const AuthContextProvider = ({children}) => {
 
         setIsLoginLoading(false);
         if (response.error) {
+            console.log("Login error:", response); 
             return setLoginError(response);
         }
 
