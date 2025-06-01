@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { getRequest, baseUrl, postRequest } from "../utils/services";
 
 export const ChatContext = createContext();
@@ -21,9 +21,9 @@ export const ChatContextProvider = ({ children, user }) => {
             const pChats = response.filter((u) => {
 
                 let isChatCreated = false;
-                if (user?._id === u._id) {console.log("I'm the culprit"); return false;}
+                if (user?._id === u._id) { console.log("I'm the culprit"); return false; }
 
-                if(userChats) {
+                if (userChats) {
                     isChatCreated = userChats?.some((chat) => {
                         return chat.members[0] === u._id || chat.members[1] === u._id
                     })
@@ -37,11 +37,11 @@ export const ChatContextProvider = ({ children, user }) => {
 
         getUsers();
 
-    }, [userChats])
+    }, [userChats]);
 
     useEffect(() => {
         const getUserChats = async () => {
-            if(user?._id) {
+            if (user?._id) {
 
                 setIsUserChatsLoading(true);
                 setUserChatsError(null);
@@ -52,21 +52,38 @@ export const ChatContextProvider = ({ children, user }) => {
 
                 if (response.error) {
                     return setUserChatsError(response.message);
-                } 
+                }
 
                 setUserChats(response);
             }
         }
 
         getUserChats()
-    }, [user])
+    }, [user]);
+
+    const createChat = useCallback(async (firstId, secondId) => {
+        const response = await postRequest(
+            `${baseUrl}/chats`,
+            JSON.stringify({
+                firstId,
+                secondId
+            })
+        )
+
+        if (response.error) {
+            return console.log("Error creating chat:", response);
+        }
+
+        setUserChats((prev) => [...prev, response]);
+    }, [])
 
     return (
         <ChatContext.Provider value={{
             userChats,
             isUserChatsLoading,
             userChatsError,
-            potentialChats
+            potentialChats,
+            createChat
         }}>
             {children}
         </ChatContext.Provider>
