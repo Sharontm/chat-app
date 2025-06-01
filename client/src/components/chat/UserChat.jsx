@@ -1,5 +1,6 @@
 import { Stack } from "react-bootstrap";
-import { useFetchRecipientUser } from "../../hooks/useFetchRecipient"
+import { useFetchRecipientUser } from "../../hooks/useFetchRecipient";
+import avatar from "../../assets/avatar.svg";
 
 const UserChat = ({chat, user}) => {
   const recipientUser = useFetchRecipientUser(chat, user);
@@ -9,7 +10,7 @@ const UserChat = ({chat, user}) => {
     <Stack direction="horizontal" gap={3} className="align-items-center user-card p-2 justify-content-between">
       <div className="d-flex">
         <div className="me-2">
-          A
+          <img src={avatar} height="35px" />
         </div>
         <div className="text-content pt-50">
           <div className="name">
@@ -23,6 +24,7 @@ const UserChat = ({chat, user}) => {
       <div className="d-flex flex-column align-items-end">
         <div className="date">12/12/2022</div>
         <div className="this-user-notifications">2</div>
+        <span className="user-online"></span>
       </div>
     </Stack>
   )
